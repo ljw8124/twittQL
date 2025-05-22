@@ -15,7 +15,7 @@ const typeDefs = gql`
     
     # 서버에서 데이터를 요청할 때 (GET)
     type Query {
-        allTweets: [Tweet]
+        allTweets: [Tweet]! # ! 의 의미는 nullable 이 아니라는 의미
         tweet(id: ID): Tweet
     }
     
