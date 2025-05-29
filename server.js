@@ -41,10 +41,13 @@ const typeDefs = gql`
 
 const resolvers = {
     Query: {
-        tweet() {
-            console.log('Tweet Call');
-            return null;
+        allTweets() {
+            return tweets;
         },
+        // resolvers 의 첫 번째 파라미터는 root
+        tweet(root, {id}) {
+            return tweets.find(tweet => tweet.id === id);
+        }
     },
 };
 
