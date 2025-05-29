@@ -1,5 +1,16 @@
 import {ApolloServer, gql} from "apollo-server";
 
+const tweets = [
+    {
+        id: "1",
+        text: "Hello~",
+    },
+    {
+        id: "2",
+        text: "test message",
+    }
+];
+
 // graphql 의  schema definition language
 const typeDefs = gql`
     type User {
@@ -28,7 +39,16 @@ const typeDefs = gql`
     # 즉 Mutation 을 이용해서 POST, Query 를 이용하여 GET
 `;
 
-const server = new ApolloServer({typeDefs});
+const resolvers = {
+    Query: {
+        tweet() {
+            console.log('Tweet Call');
+            return null;
+        },
+    },
+};
+
+const server = new ApolloServer({typeDefs, resolvers});
 
 server.listen().then(({url}) => {
     console.log(`Running on ${url}`);
