@@ -1,6 +1,6 @@
 import {ApolloServer, gql} from "apollo-server";
 
-const tweets = [
+let tweets = [
     {
         id: "1",
         text: "Hello~",
@@ -11,11 +11,26 @@ const tweets = [
     }
 ];
 
+let users = [
+    {
+        id: "1",
+        firstName: "Lee",
+        lastName: "Joungwoo"
+    },
+    {
+        id: "2",
+        firstName: "Jeong",
+        lastName: "Hyeseon"
+    }
+]
+
 // graphql 의  schema definition language
 const typeDefs = gql`
     type User {
         id: ID
-        username: String
+        firstName: String!
+        lastName: String!
+        fullName: String!
     }
 
     type Tweet {
@@ -26,6 +41,7 @@ const typeDefs = gql`
 
     # 서버에서 데이터를 요청할 때 (GET)
     type Query {
+        allUsers: [User]!
         allTweets: [Tweet]! # ! 의 의미는 nullable 이 아니라는 의미, 배열 안에 타입을 넣음으로서 무엇으로 이루어있는지 알려줌
         tweet(id: ID): Tweet
     }
@@ -47,6 +63,10 @@ const resolvers = {
         // resolvers 의 첫 번째 파라미터는 root
         tweet(root, {id}) {
             return tweets.find(tweet => tweet.id === id);
+        },
+        allUsers() {
+            console.log("allUser called");
+            return users;
         }
     },
     Mutation: {
@@ -58,6 +78,20 @@ const resolvers = {
             tweets.push(newTweet);
 
             return newTweet;
+        },
+        deleteTweet(_, {id}) {
+            const tweet = tweets.find(tweet => tweet.id === id);
+
+            if(!tweet) return false;
+
+            tweets = tweets.filter(tweet => tweet.id !== id);
+
+            return true;
+        }
+    },
+    User: {
+        fullName({firstName, lastName}) {
+            return `${firstName} ${lastName}`;
         }
     }
 };
