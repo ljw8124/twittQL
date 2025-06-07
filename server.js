@@ -1,4 +1,5 @@
 import {ApolloServer, gql} from "apollo-server";
+import {fetch} from "node-fetch";
 
 let tweets = [
     {
@@ -24,7 +25,7 @@ let users = [
         firstName: "Jeong",
         lastName: "Hyeseon"
     }
-]
+];
 
 // graphql 의  schema definition language
 const typeDefs = gql`
@@ -32,9 +33,14 @@ const typeDefs = gql`
         id: ID
         firstName: String!
         lastName: String!
+        """
+        Is the sum of firstName + lastName
+        """
         fullName: String!
     }
-
+    """
+    Tweet Object represents a resource for a Tweet
+    """
     type Tweet {
         id: ID
         text: String
@@ -46,12 +52,22 @@ const typeDefs = gql`
         allUsers: [User]!
         allTweets: [Tweet]! # ! 의 의미는 nullable 이 아니라는 의미, 배열 안에 타입을 넣음으로서 무엇으로 이루어있는지 알려줌
         tweet(id: ID): Tweet
+        movie(id: String): Movie
+    }
+    
+    type Movie {
+        id: Int!
+        url: String!
+        summary: String
     }
 
     # 사용자가 데이터를 서버에 보내고 싶을 때는 Mutation 을 사용한다 (POST)
     # 서버에 보내고 DB에 반영
     type Mutation {
         postTweet(text: String, userId: ID): Tweet
+        """
+        Deletes a Tweet if fine, else return false
+        """
         deleteTweet(id: ID): Boolean
     }
     # 즉 Mutation 을 이용해서 POST, Query 를 이용하여 GET
@@ -69,6 +85,16 @@ const resolvers = {
         allUsers() {
             console.log("allUser called");
             return users;
+        },
+        allMovies() {
+            return fetch("https://yts.torrentbay.st/api/v2/list_movies.json")
+                .then(res => res.json())
+                .then(json => json.data.movies)
+        },
+        movie(_, {id}) {
+            return.fetch(`https://yts.torrentbay.st/api/v2/movie/movie_id=${id}`)
+                .then(res => res.json())
+                .then(json => json.data.movie);
         }
     },
     Mutation: {
