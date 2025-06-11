@@ -92,7 +92,7 @@ const resolvers = {
                 .then(json => json.data.movies)
         },
         movie(_, {id}) {
-            return.fetch(`https://yts.torrentbay.st/api/v2/movie/movie_id=${id}`)
+            return fetch(`https://yts.torrentbay.st/api/v2/movie/movie_id=${id}`)
                 .then(res => res.json())
                 .then(json => json.data.movie);
         }
