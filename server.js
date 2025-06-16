@@ -1,5 +1,5 @@
 import {ApolloServer, gql} from "apollo-server";
-import {fetch} from "node-fetch";
+import fetch from "node-fetch";
 
 let tweets = [
     {
@@ -53,6 +53,7 @@ const typeDefs = gql`
         allTweets: [Tweet]! # ! 의 의미는 nullable 이 아니라는 의미, 배열 안에 타입을 넣음으로서 무엇으로 이루어있는지 알려줌
         tweet(id: ID): Tweet
         movie(id: String): Movie
+        allMovies: [Movie]
     }
     
     type Movie {
